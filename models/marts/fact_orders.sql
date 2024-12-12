@@ -16,6 +16,6 @@ SELECT
     o.CUSTOMER_ID,
     o.PRODUCT_ID,
     o.QUANTITY,
-    (o.QUANTITY * p.PRICE) AS TOTAL_PRICE
+    (o.QUANTITY * p.PRICE) AS TOTAL_REVENUE
 FROM orders o
 JOIN {{ ref('dim_products') }} p ON o.PRODUCT_ID = p.PRODUCT_ID
