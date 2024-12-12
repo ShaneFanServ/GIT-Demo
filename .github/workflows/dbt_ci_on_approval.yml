@@ -1,17 +1,14 @@
 name: dbt CI Trigger After Approval
 
 on:
-  pull_request:
-    branches:
-      - main
   pull_request_review:
     types:
-      - submitted
+      - submitted  # Trigger the workflow when a PR review is submitted
 
 jobs:
   run_dbt:
     runs-on: ubuntu-latest
-    if: github.event.review.state == 'approved'
+    if: github.event.review.state == 'approved'  # Ensure the PR is approved
 
     steps:
     - name: Checkout code
