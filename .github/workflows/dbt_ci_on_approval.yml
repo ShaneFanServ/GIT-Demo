@@ -1,16 +1,17 @@
 name: dbt CI Trigger After Approval
 
 on:
+  pull_request:
+    branches:
+      - main
   pull_request_review:
     types:
-      - submitted   # Trigger the workflow when a PR review is submitted
-    branches:
-      - main        # You can specify any branch you prefer
+      - submitted
 
 jobs:
   run_dbt:
     runs-on: ubuntu-latest
-    if: github.event.review.state == 'approved'  # Run only if the review is approved
+    if: github.event.review.state == 'approved'
 
     steps:
     - name: Checkout code
@@ -26,9 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install dbt
 
+    - name: Debug GitHub event payload
+      run: echo "${{ toJson(github.event) }}"
+
     - name: Run dbt Cloud job
       env:
-        DBT_CLOUD_API_TOKEN: ${{ secrets.DBT_CLOUD_API_TOKEN }}  # Secure token in GitHub Secrets
+        DBT_CLOUD_API_TOKEN: ${{ secrets.DBT_CLOUD_API_TOKEN }}
+        DBT_ACCOUNT_ID: ${{ secrets.DBT_ACCOUNT_ID }}
+        DBT_JOB_ID: ${{ secrets.DBT_JOB_ID }}
       run: |
-        curl -X POST "https://cloud.getdbt.com/api/v2/accounts/{account_id}/jobs/{job_id}/run/" \
+        curl -X POST "https://cloud.getdbt.com/api/v2/accounts/$DBT_ACCOUNT_ID/jobs/$DBT_JOB_ID/run/" \
           -H "Authorization: Token $DBT_CLOUD_API_TOKEN"
