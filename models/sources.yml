@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: retails
+    database: DEMO            
+    schema: RETAILS           
+    tables:
+      - name: customers_raw
+      - name: products_raw
+      - name: orders_raw
